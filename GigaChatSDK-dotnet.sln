@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GigaChatSDK", "GigaChatSDK\GigaChatSDK.csproj", "{6E133BC3-8E04-4A8D-A60D-1F577BD4359B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GigaChatSDK.Tests", "GigaChatSDK.Tests\GigaChatSDK.Tests.csproj", "{72DF7D26-C6B3-4888-9A51-BEF309506CDB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E133BC3-8E04-4A8D-A60D-1F577BD4359B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E133BC3-8E04-4A8D-A60D-1F577BD4359B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E133BC3-8E04-4A8D-A60D-1F577BD4359B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E133BC3-8E04-4A8D-A60D-1F577BD4359B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72DF7D26-C6B3-4888-9A51-BEF309506CDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72DF7D26-C6B3-4888-9A51-BEF309506CDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72DF7D26-C6B3-4888-9A51-BEF309506CDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72DF7D26-C6B3-4888-9A51-BEF309506CDB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E4DD7B7F-0025-4929-98D0-D173DC3FDD86}
+	EndGlobalSection
+EndGlobal
