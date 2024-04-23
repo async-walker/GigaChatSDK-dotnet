@@ -1,14 +1,13 @@
-﻿using GigaChatSDK.Extensions;
-
-namespace GigaChatSDK
+﻿namespace GigaChatSDK
 {
     /// <summary>
     /// 
     /// </summary>
     public class GigaChatClientOptions
     {
-        private readonly string ClientId;
-        private readonly string ClientSecret;
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
+        public string Scope { get; set; }
 
         /// <summary>
         /// 
@@ -25,17 +24,5 @@ namespace GigaChatSDK
             ClientSecret = clientSecret;
             Scope = scope;
         }
-
-        public string AuthData 
-        {
-            get
-            {
-                var template = $"{ClientId}:{ClientSecret}";
-
-                return template.EncodeToBase64();
-            }
-        }
-
-        public string Scope { get; set; }
     }
 }
