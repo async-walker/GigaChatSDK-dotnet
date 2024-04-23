@@ -1,7 +1,9 @@
-﻿using GigaChatSDK.Helpers;
+﻿using GigaChatSDK.Extensions;
+using GigaChatSDK.Helpers;
 using GigaChatSDK.Types.Data;
 using Newtonsoft.Json;
 using RestSharp;
+using RestSharp.Authenticators;
 
 namespace GigaChatSDK.Types
 {
@@ -23,26 +25,28 @@ namespace GigaChatSDK.Types
 
         public TokenData() { }
 
-        public static TokenData GetTokenData(GigaChatClientOptions chatClientOptions)
+        public static async Task<TokenData> GetTokenData(GigaChatClientOptions chatClientOptions)
         {
             var options = new RestClientOptions(
-                baseUrl: ApiEndpoints.AccessTokenEndpoint);
+                baseUrl: ApiEndpoints.AccessTokenEndpoint)
+            {
+                Authenticator = new HttpBasicAuthenticator(chatClientOptions.ClientId, chatClientOptions.ClientSecret)
+            };
 
             var tokenClient = new RestClient(options);
 
             var requestId = Guid.NewGuid().ToString();
-            var authHeader = $"Basic {chatClientOptions.AuthData}";
 
             var request = new RestRequest("oauth", Method.Post)
                 .AddHeader("RqUID", requestId)
-                .AddHeader("Authorization", authHeader)
                 .AddBody($"scope={chatClientOptions.Scope}", ContentType.FormUrlEncoded);
 
-            var response = tokenClient.Execute(request);
+            var response = await tokenClient.GetResponseAsync(request);
 
-            var tokenData = JsonConvert.DeserializeObject<TokenData>(response.Content);
+            var tokenData = JsonConvert.DeserializeObject<TokenData>(response.Content!);
 
-            return tokenData;
+            return tokenData ?? 
+                throw new NullReferenceException("TokenData after deserialize response content is null");
         }
     }
 }
