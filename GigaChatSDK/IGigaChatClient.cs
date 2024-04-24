@@ -1,9 +1,11 @@
-﻿using GigaChatSDK.Types;
+﻿using GigaChatSDK.Requests.Abstractions;
 
 namespace GigaChatSDK
 {
     public interface IGigaChatClient
     {
-        Task<TokenData> GetToken();
+        Task<TResponse> MakeRequestAsync<TResponse>(
+            IRequest<TResponse> request, 
+            CancellationToken cancellationToken);
     }
 }
