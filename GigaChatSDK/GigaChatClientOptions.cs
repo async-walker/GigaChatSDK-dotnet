@@ -1,28 +1,25 @@
 ﻿namespace GigaChatSDK
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class GigaChatClientOptions
     {
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
-        public string Scope { get; set; }
+        public string? Token { get; }
+        public string ClientId { get; }
+        public string ClientSecret { get; }
+        public string Scope { get; }
+        public bool AutoRefreshToken { get; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="clientId"></param>
-        /// <param name="clientSecret"></param>
-        /// <param name="scope"></param>
         public GigaChatClientOptions(
             string clientId,
             string clientSecret,
-            string scope) 
+            string scope,
+            bool autoRefreshToken,
+            string? token = null) 
         {
+            Token = token;
             ClientId = clientId;
             ClientSecret = clientSecret;
             Scope = scope;
+            AutoRefreshToken = autoRefreshToken;
         }
     }
 }
