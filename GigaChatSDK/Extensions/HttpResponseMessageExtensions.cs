@@ -6,27 +6,23 @@ namespace GigaChatSDK.Extensions
     internal static class HttpResponseMessageExtensions
     {
         /// <summary>
-        /// Deserialize body from HttpContent into <typeparamref name="T"/>
+        /// Десериализация контента из тела ответа в <typeparamref name="T"/>
         /// </summary>
-        /// <param name="httpResponse"><see cref="HttpResponseMessage"/> instance</param>
-        /// <param name="guard"></param>
-        /// <typeparam name="T">Type of the resulting object</typeparam>
+        /// <param name="httpResponse">Экземпляр <see cref="HttpResponseMessage"/></param>
+        /// <typeparam name="T">Тип результата</typeparam>
         /// <returns></returns>
         /// <exception cref="RequestException">
-        /// Thrown when body in the response can not be deserialized into <typeparamref name="T"/>
+        /// Возникает когда тело ответа не может быть десериализовано как <typeparamref name="T"/>
         /// </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static async Task<T> DeserializeContentAsync<T>(
-            this HttpResponseMessage httpResponse,
-            Func<T, bool> guard)
-            where T : class
+        internal static async Task<T> DeserializeContentAsync<T>(this HttpResponseMessage httpResponse)
         {
             Stream? contentStream = null;
 
             if (httpResponse.Content is null)
             {
                 throw new RequestException(
-                    message: "Response doesn't contain any content",
+                    message: "Ответ не содержит какой-либо контент",
                     httpStatusCode: httpResponse.StatusCode);
             }
 
@@ -47,7 +43,7 @@ namespace GigaChatSDK.Extensions
                 {
                     throw CreateRequestException(
                         httpResponse: httpResponse,
-                        message: "Required properties not found in response",
+                        message: "Запрашиваемые свойства не найдены в теле ответа",
                         exception: exception
                     );
                 }
@@ -56,14 +52,8 @@ namespace GigaChatSDK.Extensions
                 {
                     throw CreateRequestException(
                         httpResponse: httpResponse,
-                        message: "Required properties not found in response");
-                }
-
-                if (guard(deserializedObject))
-                {
-                    throw CreateRequestException(
-                        httpResponse: httpResponse,
-                        message: "Required properties not found in response");
+                        message: "Запрашиваемые свойства не найдены в теле ответа"
+                    );
                 }
 
                 return deserializedObject;
@@ -76,7 +66,7 @@ namespace GigaChatSDK.Extensions
                     await contentStream.DisposeAsync().ConfigureAwait(false);
                 }
 #else
-                contentStream?.Dispose();
+            contentStream?.Dispose();
 #endif
             }
         }

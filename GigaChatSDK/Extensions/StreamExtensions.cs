@@ -13,7 +13,6 @@ namespace GigaChatSDK.Extensions
         /// <returns>Deserialized instance of <typeparamref name="T" /> or <c>null</c></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T? DeserializeJsonFromStream<T>(this Stream? stream)
-            where T : class
         {
             if (stream is null || !stream.CanRead) { return default; }
 
