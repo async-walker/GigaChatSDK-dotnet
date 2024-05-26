@@ -1,23 +1,19 @@
-﻿namespace GigaChatSDK
+﻿using GigaChatSDK.Types.Enums;
+
+namespace GigaChatSDK
 {
     public class GigaChatClientOptions
     {
-        public string? Token { get; }
-        public string ClientId { get; }
-        public string ClientSecret { get; }
-        public string Scope { get; }
+        public ScopeType Scope { get; }
+        public string AuthData { get; }
         public bool AutoRefreshToken { get; }
 
         public GigaChatClientOptions(
-            string clientId,
-            string clientSecret,
-            string scope,
-            bool autoRefreshToken,
-            string? token = null) 
+            string authData,
+            ScopeType scope = ScopeType.Personal,
+            bool autoRefreshToken = true) 
         {
-            Token = token;
-            ClientId = clientId;
-            ClientSecret = clientSecret;
+            AuthData = authData;
             Scope = scope;
             AutoRefreshToken = autoRefreshToken;
         }
