@@ -11,14 +11,16 @@ namespace GigaChatSDK.Requests
         [JsonIgnore]
         public HttpMethod Method { get; }
         [JsonIgnore]
+        public string Url { get; }
+        [JsonIgnore]
         public string MethodName { get; }
 
-        protected RequestBase(string methodName)
-            : this(methodName, HttpMethod.Post)
+        protected RequestBase(string url, string methodName)
+            : this(url, methodName, HttpMethod.Post)
         { }
 
-        protected RequestBase(string methodName, HttpMethod method) =>
-            (MethodName, Method) = (methodName, method);
+        protected RequestBase(string url, string methodName, HttpMethod method) =>
+            (Url, MethodName, Method) = (url, methodName, method);
 
         public virtual HttpContent? ToHttpContent() =>
             new StringContent(
