@@ -1,9 +1,5 @@
-﻿using GigaChatSDK.Extensions;
-using GigaChatSDK.Helpers;
-using GigaChatSDK.Types.Data;
+﻿using GigaChatSDK.Helpers;
 using Newtonsoft.Json;
-using RestSharp;
-using RestSharp.Authenticators;
 
 namespace GigaChatSDK.Types
 {
@@ -21,32 +17,6 @@ namespace GigaChatSDK.Types
         {
             Token = token;
             Expires = DateTimeHelper.UnixTimeStampToDateTime(expires);
-        }
-
-        public TokenData() { }
-
-        public static async Task<TokenData> GetTokenData(GigaChatClientOptions chatClientOptions)
-        {
-            var options = new RestClientOptions(
-                baseUrl: ApiEndpoints.AccessTokenEndpoint)
-            {
-                Authenticator = new HttpBasicAuthenticator(chatClientOptions.ClientId, chatClientOptions.ClientSecret)
-            };
-
-            var tokenClient = new RestClient(options);
-
-            var requestId = Guid.NewGuid().ToString();
-
-            var request = new RestRequest("oauth", Method.Post)
-                .AddHeader("RqUID", requestId)
-                .AddBody($"scope={chatClientOptions.Scope}", ContentType.FormUrlEncoded);
-
-            var response = await tokenClient.GetResponseAsync(request);
-
-            var tokenData = JsonConvert.DeserializeObject<TokenData>(response.Content!);
-
-            return tokenData ?? 
-                throw new NullReferenceException("TokenData after deserialize response content is null");
         }
     }
 }
