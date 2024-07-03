@@ -3,20 +3,14 @@ using Newtonsoft.Json;
 
 namespace GigaChatSDK.Types
 {
-    public class TokenData
+    [method: JsonConstructor]
+    public class TokenData(
+        [JsonProperty("access_token")] string token,
+        [JsonProperty("expires_at")] long expires)
     {
         [JsonIgnore]
-        public string Token { get; set; } = default!;
+        public string Token { get; set; } = token;
         [JsonIgnore]
-        public DateTime Expires { get; set; } = default!;
-
-        [JsonConstructor]
-        public TokenData(
-            [JsonProperty("access_token")] string token, 
-            [JsonProperty("expires_at")] long expires)
-        {
-            Token = token;
-            Expires = DateTimeHelper.UnixTimeStampToDateTime(expires);
-        }
+        public DateTime Expires { get; set; } = DateTimeHelper.UnixTimeStampToDateTime(expires);
     }
 }
