@@ -6,6 +6,15 @@ namespace GigaChatSDK
 {
     public static class GigaChatClientExtensions
     {
+        public static async Task<TokenData> GetTokenDataAsync(
+            this IGigaChatClient client,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+                .MakeRequestAsync(
+                    request: new GetTokenDataRequest(),
+                    cancellationToken)
+                .ConfigureAwait(false);
+
         public static async Task<ListModels> GetListModelsAsync(
             this IGigaChatClient client,
             CancellationToken cancellationToken = default) =>
