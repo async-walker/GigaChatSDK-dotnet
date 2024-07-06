@@ -1,5 +1,4 @@
-﻿using GigaChatSDK.Data;
-using GigaChatSDK.Types;
+﻿using GigaChatSDK.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -9,9 +8,7 @@ namespace GigaChatSDK.Requests.AvailableMethods
     public class GetTokenDataRequest : RequestBase<TokenData>
     {
         public GetTokenDataRequest()
-            : base(ApiEndpoints.AccessTokenEndpoint, "oauth", HttpMethod.Post)
-        {
-
-        }
+            : base("oauth", HttpMethod.Post)
+        { }
     }
 }

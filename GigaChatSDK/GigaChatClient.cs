@@ -28,12 +28,12 @@ namespace GigaChatSDK
 
         public async Task RefreshTokenAsync(CancellationToken cancellationToken)
         {
-            var url = $"{ApiEndpoints.AccessTokenEndpoint}/oauth";
 
             var collection = new List<KeyValuePair<string, string>>
             {
                 new("scope", _options.Scope.GetEnumMemberValue())
             };
+            var url = $"{_options.BaseRefreshTokenUrl}/oauth";
 
             var httpRequest = new HttpRequestMessage(method: HttpMethod.Post, requestUri: url)
             {
@@ -83,9 +83,9 @@ namespace GigaChatSDK
             if (_options.AutoRefreshToken && ((_tokenData == null) || (_tokenData.Expires < DateTime.UtcNow)))
                 await RefreshTokenAsync(cancellationToken);
 
-            var url = $"{request.Url}/{request.MethodName}";
-
-            var httpRequest = new HttpRequestMessage(method: request.Method, requestUri: url)
+            var url = $"{_options.BaseRequestUrl}/{request.MethodName}";
+            
+            var httpRequest = new HttpRequestMessage(request.Method, url)
             {
                 Content = request.ToHttpContent(),
             };
