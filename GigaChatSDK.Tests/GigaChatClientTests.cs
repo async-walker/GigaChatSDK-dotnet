@@ -1,24 +1,36 @@
-using GigaChatSDK.Types.Data;
+using System.Text;
 
 namespace GigaChatSDK.Tests
 {
     public class GigaChatClientTests
     {
-        IGigaChatClient _client;
+        readonly IGigaChatClient _client;
 
         public GigaChatClientTests()
         {
             var clientId = "";
             var clientSecret = "";
 
+            var authData = Encoding.UTF8.GetBytes($"{clientId}:{clientSecret}");
+
             _client = new GigaChatClient(
-                new GigaChatClientOptions(clientId, clientSecret, ScopeConstants.PERSONAL_SCOPE));
+                new GigaChatClientOptions(
+                    authData: Convert.ToBase64String(authData)));
         }
 
         [Fact]
-        public void Test1()
+        public async void RefreshTokenAsyncTest()
         {
-            var e = _client.GetToken();
+            await _client.RefreshTokenAsync(default);
+        }
+
+        [Fact]
+        public async void GetListModelsAsyncTest()
+        {
+            var models = await _client.GetListModelsAsync(default);
+
+            Assert.NotNull(models);
+            Assert.True(models.Models.Count > 0);
         }
     }
 }
