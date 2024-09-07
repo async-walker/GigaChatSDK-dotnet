@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
-using System.Text.Json;
 using GigaChatSDK.Exceptions;
 using GigaChatSDK.Extensions;
 using GigaChatSDK.Requests.Abstractions;
@@ -32,7 +31,7 @@ public class GigaChatClient(
     /// <inheritdoc />
     public async Task<AccessToken?> GetAccessTokenAsync(CancellationToken cancellationToken)
     {
-        if (!_clientOptions.AutoRefreshToken || (!string.IsNullOrEmpty(_accessToken?.Value) && DateTime.UtcNow < _accessToken?.Expires)) 
+        if (!_clientOptions.AutoRefreshToken || (!string.IsNullOrEmpty(_accessToken?.Value) && DateTime.UtcNow < _accessToken?.ExpiresAt)) 
             return _accessToken;
 
         var url = $"{GigaChatClientOptions.BaseAccessTokenUrl}/oauth";

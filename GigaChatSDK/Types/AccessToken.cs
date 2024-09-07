@@ -6,22 +6,20 @@ namespace GigaChatSDK.Types;
 /// <summary>
 ///     Токен доступа к методам API
 /// </summary>
-/// <param name="value">Значение</param>
-/// <param name="expires">Время действия в Unix формате</param>
+/// <param name="accessToken"></param>
+/// <param name="expiresAt"></param>
 [method: JsonConstructor]
 public class AccessToken(
-    [JsonProperty("access_token")] string value,
-    [JsonProperty("expires_at")] long expires)
+    string accessToken,
+    long expiresAt)
 {
     /// <summary>
     ///     Значение токена
     /// </summary>
-    [JsonIgnore]
-    public string Value { get; set; } = value;
+    public string Value { get; set; } = accessToken;
 
     /// <summary>
     ///     Время, до которого действует токен (UTC)
     /// </summary>
-    [JsonIgnore]
-    public DateTime Expires { get; set; } = DateTimeHelper.UnixTimeStampToDateTime(expires);
+    public DateTime ExpiresAt { get; set; } = DateTimeHelper.UnixTimeStampToDateTime(expiresAt);
 }

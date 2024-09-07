@@ -1,20 +1,20 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿namespace GigaChatSDK.Requests;
 
-namespace GigaChatSDK.Requests
+/// <summary>
+///     Абстракция запроса к API без параметров
+/// </summary>
+/// <typeparam name="TResponse">Тип ответа</typeparam>
+public abstract class ParameterlessRequest<TResponse> : RequestBase<TResponse>
 {
-    [JsonObject(MemberSerialization.OptIn, NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public abstract class ParameterlessRequest<TResult> : RequestBase<TResult>
+    /// <inheritdoc />
+    protected ParameterlessRequest(string methodName)
+        : base(methodName)
     {
-        protected ParameterlessRequest(string methodName)
-            : base(methodName)
-        { }
+    }
 
-        protected ParameterlessRequest(string methodName, HttpMethod method)
-            : base(methodName, method)
-        { }
-
-        public override HttpContent? ToHttpContent() =>
-            base.ToHttpContent();
+    /// <inheritdoc />
+    protected ParameterlessRequest(string methodName, HttpMethod method)
+        : base(methodName, method)
+    {
     }
 }

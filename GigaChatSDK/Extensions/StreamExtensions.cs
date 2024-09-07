@@ -1,28 +1,37 @@
-﻿using Newtonsoft.Json;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
-namespace GigaChatSDK.Extensions
+namespace GigaChatSDK.Extensions;
+
+internal static class StreamExtensions
 {
-    internal static class StreamExtensions
+    /// <summary>
+    ///     Десериализация JSON из потока в <typeparamref name="TResponse" />
+    /// </summary>
+    /// <param name="stream"><see cref="Stream" /> содержащий контент для десериализации</param>
+    /// <typeparam name="TResponse">Тип ответа</typeparam>
+    /// <returns>Десериализованный экземепляр <typeparamref name="TResponse" /> или <c>null</c></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TResponse? DeserializeJsonFromStream<TResponse>(this Stream? stream)
     {
-        /// <summary>
-        /// Deserialized JSON in Stream into <typeparamref name="T"/>
-        /// </summary>
-        /// <param name="stream"><see cref="Stream"/> with content</param>
-        /// <typeparam name="T">Type of the resulting object</typeparam>
-        /// <returns>Deserialized instance of <typeparamref name="T" /> or <c>null</c></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T? DeserializeJsonFromStream<T>(this Stream? stream)
+        if (stream is null || !stream.CanRead) return default;
+
+        using var streamReader = new StreamReader(stream);
+        using var jsonTextReader = new JsonTextReader(streamReader);
+
+        var serializerSettings = new JsonSerializerSettings
         {
-            if (stream is null || !stream.CanRead) { return default; }
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new SnakeCaseNamingStrategy()
+            },
+            Formatting = Formatting.Indented
+        };
 
-            using var streamReader = new StreamReader(stream);
-            using var jsonTextReader = new JsonTextReader(streamReader);
+        var jsonSerializer = JsonSerializer.CreateDefault(serializerSettings);
+        var searchResult = jsonSerializer.Deserialize<TResponse>(jsonTextReader);
 
-            var jsonSerializer = JsonSerializer.CreateDefault();
-            var searchResult = jsonSerializer.Deserialize<T>(jsonTextReader);
-
-            return searchResult;
-        }
+        return searchResult;
     }
 }

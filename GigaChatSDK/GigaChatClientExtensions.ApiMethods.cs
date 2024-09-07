@@ -11,14 +11,14 @@ public static class GigaChatClientExtensions
     /// </summary>
     /// <param name="client">Клиент <see cref="IGigaChatClient" /></param>
     /// <param name="cancellationToken">Токен отмены</param>
-    /// <returns>Список доступных моделей <see cref="ListModels" /></returns>
-    public static async Task<ListModels> GetListModelsAsync(
+    /// <returns>Список доступных моделей <see cref="AvailableModels" /></returns>
+    public static async Task<AvailableModels> GetAvailableModelsAsync(
         this IGigaChatClient client,
         CancellationToken cancellationToken = default)
     {
         return await client.ThrowIfNull()
             .MakeRequestAsync(
-                new GetListModelsRequest(),
+                new GetAvailableModelsRequest(),
                 cancellationToken)
             .ConfigureAwait(false);
     }
