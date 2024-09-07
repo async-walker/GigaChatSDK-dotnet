@@ -1,155 +1,132 @@
-﻿using GigaChatSDK.Data;
+﻿using System.Net;
+using System.Net.Http.Headers;
+using System.Text.Json;
 using GigaChatSDK.Exceptions;
 using GigaChatSDK.Extensions;
 using GigaChatSDK.Requests.Abstractions;
-using GigaChatSDK.Requests.AvailableMethods;
 using GigaChatSDK.Types;
-using System.Net;
-using System.Runtime.CompilerServices;
 
-namespace GigaChatSDK
+namespace GigaChatSDK;
+
+/// <summary>
+///     Клиент для работы с API
+/// </summary>
+/// <param name="options">Конфигурация</param>
+/// <param name="httpClient">Экземпляр <see cref="HttpClient" /></param>
+public class GigaChatClient(
+    GigaChatClientOptions options,
+    HttpClient? httpClient = default)
+    : IGigaChatClient, IDisposable
 {
-    public class GigaChatClient : IGigaChatClient, IDisposable
+    private readonly GigaChatClientOptions _clientOptions = options ?? throw new ArgumentNullException(nameof(options));
+    private readonly HttpClient _httpClient = httpClient ?? new HttpClient();
+
+    private AccessToken? _accessToken;
+
+    /// <inheritdoc />
+    public void Dispose()
     {
-        static TokenData _tokenData = default!;
+        GC.SuppressFinalize(this);
+    }
 
-        readonly GigaChatClientOptions _options;
-        readonly HttpClient _httpClient;
+    /// <inheritdoc />
+    public async Task<AccessToken?> GetAccessTokenAsync(CancellationToken cancellationToken)
+    {
+        if (!_clientOptions.AutoRefreshToken || (!string.IsNullOrEmpty(_accessToken?.Value) && DateTime.UtcNow < _accessToken?.Expires)) 
+            return _accessToken;
 
-        public GigaChatClient(
-            GigaChatClientOptions options,
-            HttpClient? httpClient = default)
+        var url = $"{GigaChatClientOptions.BaseAccessTokenUrl}/oauth";
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, url)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
-            _httpClient = httpClient ?? new HttpClient();
+            Content = new FormUrlEncodedContent(
+                [new KeyValuePair<string, string>("scope", _clientOptions.Scope.GetEnumMemberValue())])
+        };
+
+        httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", _clientOptions.AuthData);
+        httpRequest.Headers.Add("RqUID", Guid.NewGuid().ToString());
+
+        using var httpResponse = await SendRequestAsync(
+                _httpClient, httpRequest, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (httpResponse.StatusCode != HttpStatusCode.OK)
+        {
+            throw new NotImplementedException();
         }
 
-        public void Dispose() => GC.SuppressFinalize(this);
+        _accessToken = await httpResponse
+            .DeserializeContentAsync<AccessToken>()
+            .ConfigureAwait(false);
 
-        public async Task RefreshTokenAsync(CancellationToken cancellationToken)
+        return _accessToken;
+    }
+
+    /// <inheritdoc />
+    public async Task<TResponse> MakeRequestAsync<TResponse>(
+        IRequest<TResponse> request,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        var token = await GetAccessTokenAsync(cancellationToken);
+
+        var url = $"{GigaChatClientOptions.BaseRequestUrl}/{request.MethodName}";
+
+        var httpRequest = new HttpRequestMessage(request.Method, url)
         {
+            Content = request.ToHttpContent()
+        };
 
-            var collection = new List<KeyValuePair<string, string>>
-            {
-                new("scope", _options.Scope.GetEnumMemberValue())
-            };
-            var url = $"{_options.BaseRefreshTokenUrl}/oauth";
+        httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token!.Value);
+        httpRequest.Headers.Add("Accept", "application/json");
 
-            var httpRequest = new HttpRequestMessage(method: HttpMethod.Post, requestUri: url)
-            {
-                Content = new FormUrlEncodedContent(collection)
-            };
+        using var httpResponse = await SendRequestAsync(
+                _httpClient, httpRequest, cancellationToken)
+            .ConfigureAwait(false);
 
-            httpRequest.Headers.Add("Authorization", $"Basic {_options.AuthData}");
-            httpRequest.Headers.TryAddWithoutValidation("Content-Type", "application/x-www-form-urlencoded");
-            httpRequest.Headers.Add("Accept", "application/json");
-            httpRequest.Headers.Add("RqUID", Guid.NewGuid().ToString());
-
-            using var httpResponse = await SendRequestAsync(
-                httpClient: _httpClient,
-                httpRequest: httpRequest,
-                cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
-
-            if (httpResponse.StatusCode != HttpStatusCode.OK)
-            {
-                //var failedApiResponse = await httpResponse
-                //.DeserializeContentAsync<ApiResponse>(
-                //    guard: response =>
-                //        response.ErrorCode == default ||
-                //        response.Description is null
-                //)
-                //.ConfigureAwait(false);
-
-                //throw ExceptionsParser.Parse(failedApiResponse);
-                throw new NotImplementedException();
-            }
-
-            var tokenData = await httpResponse
-                .DeserializeContentAsync<TokenData>()
-                .ConfigureAwait(false);
-
-            _tokenData = tokenData;
+        if (httpResponse.StatusCode != HttpStatusCode.OK)
+        {
+            throw new NotImplementedException();
         }
 
-        public async Task<TResponse> MakeRequestAsync<TResponse>(
-            IRequest<TResponse> request,
-            CancellationToken cancellationToken)
+        var apiResponse = await httpResponse
+            .DeserializeContentAsync<TResponse>()
+            .ConfigureAwait(false);
+
+        return apiResponse;
+    }
+
+    private static async Task<HttpResponseMessage> SendRequestAsync(
+        HttpClient httpClient,
+        HttpRequestMessage httpRequest,
+        CancellationToken cancellationToken)
+    {
+        HttpResponseMessage? httpResponse;
+
+        try
         {
-            ArgumentNullException.ThrowIfNull(request);
-
-            if (request is not GetTokenDataRequest)
-
-            if (_options.AutoRefreshToken && ((_tokenData == null) || (_tokenData.Expires < DateTime.UtcNow)))
-                await RefreshTokenAsync(cancellationToken);
-
-            var url = $"{_options.BaseRequestUrl}/{request.MethodName}";
-            
-            var httpRequest = new HttpRequestMessage(request.Method, url)
-            {
-                Content = request.ToHttpContent(),
-            };
-
-            using var httpResponse = await SendRequestAsync(
-                httpClient: _httpClient,
-                httpRequest: httpRequest,
-                cancellationToken: cancellationToken)
+            httpResponse = await httpClient
+                .SendAsync(httpRequest, cancellationToken)
                 .ConfigureAwait(false);
+        }
+        catch (TaskCanceledException ex)
+        {
+            if (cancellationToken.IsCancellationRequested)
+                throw;
 
-            if (httpResponse.StatusCode != HttpStatusCode.OK)
-            {
-                //var failedApiResponse = await httpResponse
-                //.DeserializeContentAsync<ApiResponse>(
-                //    guard: response =>
-                //        response.ErrorCode == default ||
-                //        response.Description is null
-                //)
-                //.ConfigureAwait(false);
-
-                //throw ExceptionsParser.Parse(failedApiResponse);
-                throw new NotImplementedException();
-            }
-
-            var apiResponse = await httpResponse
-                .DeserializeContentAsync<TResponse>()
-                .ConfigureAwait(false);
-
-            return apiResponse;
+            throw new RequestException(
+                "Request timed out",
+                ex);
+        }
+        catch (Exception ex)
+        {
+            throw new RequestException(
+                "Exception during making request",
+                ex);
         }
 
-        [MethodImpl(methodImplOptions: MethodImplOptions.AggressiveInlining)]
-        static async Task<HttpResponseMessage> SendRequestAsync(
-            HttpClient httpClient,
-            HttpRequestMessage httpRequest,
-            CancellationToken cancellationToken)
-        {
-            HttpResponseMessage? httpResponse;
-            try
-            {
-                httpResponse = await httpClient
-                    .SendAsync(httpRequest, cancellationToken)
-                    .ConfigureAwait(continueOnCapturedContext: false);
-            }
-            catch (TaskCanceledException exception)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    throw;
-                }
-
-                throw new RequestException(
-                    message: "Request timed out",
-                    innerException: exception);
-            }
-            catch (Exception exception)
-            {
-                throw new RequestException(
-                    message: "Exception during making request",
-                    innerException: exception
-                );
-            }
-
-            return httpResponse;
-        }
+        return httpResponse;
     }
 }
