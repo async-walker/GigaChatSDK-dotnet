@@ -11,14 +11,19 @@ namespace GigaChatSDK.Types.Enums
     public enum ScopeType
     {
         /// <summary>
-        /// Для физических лиц
+        /// Доступ для физических лиц
         /// </summary>
         [EnumMember(Value = "GIGACHAT_API_PERS")]
         Personal,
         /// <summary>
-        /// Для ИП/ЮЛ
+        /// Доступ для ИП и юридических лиц по <a href="https://developers.sber.ru/docs/ru/gigachat/api/tariffs#platnye-pakety-pri-rabote-po-predoplatnoy-sheme">предоплате</a>
+        /// </summary>
+        [EnumMember(Value = "GIGACHAT_API_B2B")]
+        B2B,
+        /// <summary>
+        /// Доступ для ИП и юридических лиц по <a href="https://developers.sber.ru/docs/ru/gigachat/api/legal-postpaid">постоплате</a>
         /// </summary>
         [EnumMember(Value = "GIGACHAT_API_CORP")]
-        Corporative
+        Corporate
     }
 }
