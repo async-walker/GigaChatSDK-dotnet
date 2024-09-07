@@ -5,7 +5,11 @@ VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GigaChatSDK", "GigaChatSDK\GigaChatSDK.csproj", "{6E133BC3-8E04-4A8D-A60D-1F577BD4359B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GigaChatSDK.Tests", "GigaChatSDK.Tests\GigaChatSDK.Tests.csproj", "{72DF7D26-C6B3-4888-9A51-BEF309506CDB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8DF25708-500F-4BB5-9415-98185D028934}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GigaChatSDK.IntegrationTests", "Tests\GigaChatSDK.IntegrationTests\GigaChatSDK.IntegrationTests.csproj", "{3C103890-9E24-4166-BC2C-01E8A3B1893F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GigaChatSDK.UnitTests", "Tests\GigaChatSDK.UnitTests\GigaChatSDK.UnitTests.csproj", "{2D8D48F0-11EE-4313-876D-5C07C18CEC65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,13 +21,21 @@ Global
 		{6E133BC3-8E04-4A8D-A60D-1F577BD4359B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E133BC3-8E04-4A8D-A60D-1F577BD4359B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E133BC3-8E04-4A8D-A60D-1F577BD4359B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{72DF7D26-C6B3-4888-9A51-BEF309506CDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{72DF7D26-C6B3-4888-9A51-BEF309506CDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{72DF7D26-C6B3-4888-9A51-BEF309506CDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{72DF7D26-C6B3-4888-9A51-BEF309506CDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C103890-9E24-4166-BC2C-01E8A3B1893F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C103890-9E24-4166-BC2C-01E8A3B1893F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C103890-9E24-4166-BC2C-01E8A3B1893F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C103890-9E24-4166-BC2C-01E8A3B1893F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D8D48F0-11EE-4313-876D-5C07C18CEC65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D8D48F0-11EE-4313-876D-5C07C18CEC65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D8D48F0-11EE-4313-876D-5C07C18CEC65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D8D48F0-11EE-4313-876D-5C07C18CEC65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3C103890-9E24-4166-BC2C-01E8A3B1893F} = {8DF25708-500F-4BB5-9415-98185D028934}
+		{2D8D48F0-11EE-4313-876D-5C07C18CEC65} = {8DF25708-500F-4BB5-9415-98185D028934}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4DD7B7F-0025-4929-98D0-D173DC3FDD86}

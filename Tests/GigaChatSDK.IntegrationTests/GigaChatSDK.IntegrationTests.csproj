@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GigaChatSDK\GigaChatSDK.csproj" />
+    <ProjectReference Include="..\..\GigaChatSDK\GigaChatSDK.csproj" />
   </ItemGroup>
 
   <ItemGroup>
