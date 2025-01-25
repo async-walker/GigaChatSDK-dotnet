@@ -1,4 +1,3 @@
-﻿using GigaChatSDK.Types.Enums;
 using Newtonsoft.Json;
 
 namespace GigaChatSDK.Types;
@@ -12,7 +11,7 @@ public class ModelInfo
     ///     Название модели
     /// </summary>
     [JsonProperty("id")]
-    public GigaChatModel Model { get; set; }
+    public string Model { get; set; } = default!;
 
     /// <summary>
     ///     Тип сущности в ответе, например, модель

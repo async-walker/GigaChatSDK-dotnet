@@ -31,7 +31,7 @@ public class GigaChatClient(
     /// <inheritdoc />
     public async Task<AccessToken?> GetAccessTokenAsync(CancellationToken cancellationToken)
     {
-        if (!_clientOptions.AutoRefreshToken || (!string.IsNullOrEmpty(_accessToken?.Value) && DateTime.UtcNow < _accessToken?.ExpiresAt)) 
+        if (!_clientOptions.AutoRefreshToken || (!string.IsNullOrEmpty(_accessToken?.Value) && DateTimeOffset.UtcNow < _accessToken?.ExpiresAt)) 
             return _accessToken;
 
         var url = $"{GigaChatClientOptions.BaseAccessTokenUrl}/oauth";
@@ -46,8 +46,9 @@ public class GigaChatClient(
         httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", _clientOptions.AuthData);
         httpRequest.Headers.Add("RqUID", Guid.NewGuid().ToString());
 
-        using var httpResponse = await SendRequestAsync(
-                _httpClient, httpRequest, cancellationToken)
+        using var httpResponse = await SendRequestAsync(_httpClient,
+                httpRequest,
+                cancellationToken)
             .ConfigureAwait(false);
 
         if (httpResponse.StatusCode != HttpStatusCode.OK)

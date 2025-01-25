@@ -1,4 +1,4 @@
-﻿using GigaChatSDK.Extensions;
+using GigaChatSDK.Extensions;
 using GigaChatSDK.Requests.AvailableMethods;
 using GigaChatSDK.Types;
 
@@ -11,8 +11,8 @@ public static class GigaChatClientExtensions
     /// </summary>
     /// <param name="client">Клиент <see cref="IGigaChatClient" /></param>
     /// <param name="cancellationToken">Токен отмены</param>
-    /// <returns>Список доступных моделей <see cref="AvailableModels" /></returns>
-    public static async Task<AvailableModels> GetAvailableModelsAsync(
+    /// <returns>Список доступных моделей <see cref="ModelInfo" /></returns>
+    public static async Task<ListModels> GetAvailableModelsAsync(
         this IGigaChatClient client,
         CancellationToken cancellationToken = default)
     {

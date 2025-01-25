@@ -21,5 +21,5 @@ public class AccessToken(
     /// <summary>
     ///     Время, до которого действует токен (UTC)
     /// </summary>
-    public DateTime ExpiresAt { get; set; } = DateTimeHelper.UnixTimeStampToDateTime(expiresAt);
+    public DateTimeOffset ExpiresAt { get; set; } = DateTimeHelper.UnixTimeStampToDateTime(expiresAt);
 }
