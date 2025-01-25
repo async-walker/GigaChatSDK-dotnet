@@ -1,7 +1,8 @@
-﻿using System.Text;
+using System;
+using System.Text;
 using GigaChatSDK.Types.Enums;
 
-namespace GigaChatSDK.UnitTests;
+namespace GigaChatSDK;
 
 public class GigaChatClientTests
 {
@@ -22,7 +23,7 @@ public class GigaChatClientTests
     }
 
     [Fact(DisplayName = "Получение токена доступа с автообновлением токена")]
-    public async void AccessToken_GetIfAutoRefresh_ShouldReturnNotNull()
+    public async void GetAccessToken_WhenAutoRefresh_ShouldReturnNotNull()
     {
         var client = InitClient();
 
@@ -32,7 +33,7 @@ public class GigaChatClientTests
     }
 
     [Fact(DisplayName = "Получение токена доступа без автообновления токена при первом обращении")]
-    public async void AccessToken_GetIfNotAutoRefreshAndCallFirstTime_ShouldReturnNull()
+    public async void GetAccessToken_WhenNotAutoRefreshAndCallFirstTime_ShouldReturnNull()
     {
         var client = InitClient(false);
 
@@ -42,7 +43,7 @@ public class GigaChatClientTests
     }
 
     [Fact(DisplayName = "Получение доступных моделей")]
-    public async void AvailableModels_Get_ReturnCountOverZero()
+    public async void GetAvailableModels_WhenAccess_ReturnModels()
     {
         var client = InitClient();
 
